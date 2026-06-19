@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#8B6F47" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>The Shelf — Reading Room Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7F0;
+    --paper-dim:#F3ECDF;
+    --ink:#1C1B19;
+    --ink-soft:#5b554a;
+    --binding:#8B6F47;
+    --binding-dark:#6e5536;
+    --stamp:#A6453A;
+    --library-green:#3D5A4C;
+    --rule: rgba(28,27,25,0.14);
+    --shadow: 0 1px 0 rgba(28,27,25,0.06);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html, body {
+    margin:0;
+    padding:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  body{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(28,27,25,0.035) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  a { color: inherit; }
+
+  /* ============ LAYOUT SHELL ============ */
+  .frame {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  @media (max-width: 860px) {
+    .frame { grid-template-columns: 1fr; }
+  }
+
+  /* ============ SPINE (left rail) ============ */
+  .spine {
+    background: var(--binding);
+    background-image: linear-gradient(180deg, var(--binding) 0%, var(--binding-dark) 100%);
+    color: #F4E9D8;
+    padding: 36px 28px;
+    position: relative;
+    border-right: 1px solid rgba(0,0,0,0.18);
+  }
+  .spine::after{
+    content:"";
+    position:absolute;
+    top:0; right:-6px; bottom:0;
+    width:6px;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(0,0,0,0.18) 0px,
+      rgba(0,0,0,0.18) 3px,
+      transparent 3px,
+      transparent 9px
+    );
+  }
+
+  .spine-title {
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.78;
+    margin: 0 0 6px;
+  }
+  .spine-name {
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0 0 28px;
+    font-weight: 600;
+  }
+  .spine-name em { font-style: italic; font-weight: 400; opacity: 0.92; }
+
+  .spine-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(244,233,216,0.22);
+  }
+  .stat-row {
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .stat-label { opacity: 0.72; letter-spacing: 0.03em;}
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+
+  .dropzone {
+    border: 1.5px dashed rgba(244,233,216,0.45);
+    border-radius: 2px;
+    padding: 22px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    margin-bottom: 14px;
+  }
+  .dropzone:hover, .dropzone.drag {
+    background: rgba(244,233,216,0.08);
+    border-color: rgba(244,233,216,0.8);
+  }
+  .dropzone svg {
+    display: block;
+    width: 22px;
+    height: 22px;
+    margin: 0 auto 10px;
+    opacity: 0.85;
+    flex-shrink: 0;
+  }
+  .dropzone-title { font-size: 14px; margin: 0 0 4px; }
+  .dropzone-sub { font-size: 11.5px; opacity: 0.65; margin: 0; font-family: 'JetBrains Mono', monospace;}
+  input[type=file] { display:none; }
+
+  .upload-list {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom: 18px;
+  }
+  .upload-progress-item{
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(244,233,216,0.08);
+    border: 1px solid rgba(244,233,216,0.2);
+    padding: 8px 10px;
+    border-radius: 2px;
+  }
+  .upload-progress-item .fname { display:block; margin-bottom: 6px; opacity: 0.9; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;}
+  .bar-track { height: 3px; background: rgba(244,233,216,0.18); border-radius: 2px; overflow:hidden;}
+  .bar-fill { height: 100%; background: #F4E9D8; width:0%; transition: width 0.2s ease;}
+  .upload-progress-item.done .bar-fill { background: #9FCBB4; }
+  .upload-progress-item.error .bar-fill { background: var(--stamp); }
+
+  .spine-footnote {
+    font-size: 11px;
+    line-height: 1.6;
+    opacity: 0.55;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ============ MAIN READING ROOM ============ */
+  .room {
+    padding: 48px 56px 80px;
+  }
+  @media (max-width: 860px){
+    .room { padding: 32px 20px 60px; }
+  }
+  @media (max-width: 860px){
+    .spine { padding: 24px 20px; }
+  }
+
+  @media (max-width: 420px){
+    .room { padding: 24px 14px 48px; }
+    .spine { padding: 20px 16px; }
+    .spine-name { font-size: 26px; }
+    .room-header { gap: 10px; }
+    .room-tools { gap: 10px; }
+    .refresh-btn .btn-label { display: none; }
+    .refresh-btn { padding: 9px 10px; }
+    .card-title { font-size: 15.5px; }
+    .card-ext { display: block; width: fit-content; margin: 4px 0 0; }
+  }
+
+  .room-header {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .room-header h1 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin: 0;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .room-tools {
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+  .search-wrap input {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    background: transparent;
+    padding: 4px 4px 6px 0;
+    width: 100%;
+    min-width: 0;
+    max-width: 220px;
+    color: var(--ink);
+    outline: none;
+  }
+  .search-wrap input::placeholder { color: var(--ink-soft); opacity: 0.6; }
+  .search-wrap input:focus { border-bottom-color: var(--ink); }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    min-height: 40px;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .refresh-btn:hover { background: var(--ink); color: var(--paper); }
+  .refresh-btn:focus-visible, .dropzone:focus-visible, .search-wrap input:focus-visible, .card-action:focus-visible {
+    outline: 2px solid var(--stamp);
+    outline-offset: 2px;
+  }
+  .refresh-btn svg { width: 13px; height: 13px; }
+  .refresh-btn.spin svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 90px 20px;
+    color: var(--ink-soft);
+  }
+  .empty-state .glyph { font-size: 30px; margin-bottom: 14px; opacity: 0.5; }
+  .empty-state h2 {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .empty-state p {
+    font-size: 13.5px;
+    max-width: 360px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ============ CATALOG CARDS (signature element) ============ */
+  .catalog {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 64px 1fr auto auto;
+    align-items: center;
+    gap: 22px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    animation: rise 0.35s ease both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:first-child { border-top: 1px solid var(--rule); }
+
+  @media (max-width: 700px) {
+    .card {
+      grid-template-columns: 48px 1fr;
+      grid-template-areas:
+        "stamp title"
+        "stamp meta"
+        "stamp actions";
+      row-gap: 10px;
+      padding: 16px 0;
+    }
+    .card-stampnum { grid-area: stamp; }
+    .card-main { grid-area: title; }
+    .card-meta-col {
+      grid-area: meta;
+      text-align: left;
+    }
+    .card-actions { grid-area: actions; justify-self: start; flex-wrap: wrap; }
+  }
+
+  .card-stampnum {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--binding);
+    border: 1px solid var(--binding);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-dim);
+    flex-shrink: 0;
+  }
+
+  .card-main { min-width: 0; }
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-ext {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--stamp);
+    border: 1px solid var(--stamp);
+    border-radius: 2px;
+    padding: 1px 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .card-meta-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: right;
+    line-height: 1.7;
+    white-space: nowrap;
+  }
+  .card-meta-col .meta-date { color: var(--library-green); }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .card-action {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 10px 14px;
+    min-height: 40px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .card-action.primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .card-action.primary:hover { background: var(--stamp); border-color: var(--stamp); }
+  .card-action.ghost:hover { background: var(--ink); color: var(--paper); }
+  .card-action.danger { border-color: var(--stamp); color: var(--stamp); }
+  .card-action.danger:hover { background: var(--stamp); color: var(--paper); }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 10px 18px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.error { background: var(--stamp); }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <!-- SPINE -->
+  <aside class="spine">
+    <p class="spine-title">Reading Room</p>
+    <h2 class="spine-name">The <em>Shelf</em></h2>
+
+    <div class="spine-stats">
+      <div class="stat-row">
+        <span class="stat-label">Volumes held</span>
+        <span class="stat-value" id="statCount">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Shelf space used</span>
+        <span class="stat-value" id="statSize">0 KB</span>
+      </div>
+    </div>
+
+    <label class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Add a book to the shelf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+      <p class="dropzone-title">Add to the shelf</p>
+      <p class="dropzone-sub">drop a file, or click to browse</p>
+      <input type="file" id="fileInput" multiple />
+    </label>
+
+    <div class="upload-list" id="uploadList"></div>
+
+    <p class="spine-footnote">Stored in this browser's archive. Files stay here until you remove them.</p>
+  </aside>
+
+  <!-- READING ROOM -->
+  <main class="room">
+    <div class="room-header">
+      <h1>Catalog</h1>
+      <div class="room-tools">
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="search the catalog…" aria-label="Search the catalog" />
+        </div>
+        <button class="refresh-btn" id="refreshBtn" aria-label="Refresh the catalog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          <span class="btn-label">Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="catalogWrap">
+      <div class="empty-state" id="emptyState">
+        <div class="glyph">&#10097;&#10098;</div>
+        <h2>The shelf is empty</h2>
+        <p>Nothing has been catalogued yet. Add a file from the left to begin your archive.</p>
+      </div>
+      <div class="catalog" id="catalog" style="display:none;"></div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const STORAGE_PREFIX = 'book:';
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const uploadList = document.getElementById('uploadList');
+  const catalog = document.getElementById('catalog');
+  const emptyState = document.getElementById('emptyState');
+  const statCount = document.getElementById('statCount');
+  const statSize = document.getElementById('statSize');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const searchInput = document.getElementById('searchInput');
+  const toastEl = document.getElementById('toast');
+
+  let books = []; // {id, name, size, type, uploaded(ts), dataUrl}
+  let filterText = '';
+
+  function showToast(msg, isError){
+    toastEl.textContent = msg;
+    toastEl.classList.toggle('error', !!isError);
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> toastEl.classList.remove('show'), 2600);
+  }
+
+  function fmtSize(bytes){
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  function fmtDate(ts){
+    const d = new Date(ts);
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    return `${String(d.getDate()).padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function extOf(name){
+    const parts = name.split('.');
+    return parts.length > 1 ? parts.pop().toUpperCase() : 'FILE';
+  }
+
+  function stampNum(i){
+    return String(i+1).padStart(2,'0');
+  }
+
+  async function loadBooks(){
+    refreshBtn.classList.add('spin');
+    let keys = [];
+    try {
+      const listResult = await window.storage.list(STORAGE_PREFIX, false);
+      keys = (listResult && listResult.keys) || [];
+    } catch (e) {
+      // An empty/missing key space throws rather than returning null —
+      // treat that as "nothing on the shelf yet", not a hard failure.
+      keys = [];
+    }
+
+    const loaded = [];
+    for (const key of keys) {
+      try {
+        const res = await window.storage.get(key, false);
+        if (res && res.value) {
+          loaded.push(JSON.parse(res.value));
+        }
+      } catch (e) { /* skip unreadable entry */ }
+    }
+    loaded.sort((a,b)=> b.uploaded - a.uploaded);
+    books = loaded;
+    render();
+    setTimeout(()=> refreshBtn.classList.remove('spin'), 400);
+  }
+
+  function render(){
+    const q = filterText.trim().toLowerCase();
+    const filtered = q ? books.filter(b => b.name.toLowerCase().includes(q)) : books;
+
+    statCount.textContent = books.length;
+    const totalBytes = books.reduce((s,b)=> s + (b.size||0), 0);
+    statSize.textContent = fmtSize(totalBytes);
+
+    if (books.length === 0) {
+      emptyState.style.display = '';
+      catalog.style.display = 'none';
+      return;
+    }
+
+    if (filtered.length === 0) {
+      emptyState.style.display = '';
+      catalog.style.display = 'none';
+      emptyState.querySelector('h2').textContent = 'No matches on the shelf';
+      emptyState.querySelector('p').textContent = `Nothing in the catalog matches "${filterText}".`;
+      return;
+    } else {
+      emptyState.querySelector('h2').textContent = 'The shelf is empty';
+      emptyState.querySelector('p').textContent = 'Nothing has been catalogued yet. Add a file from the left to begin your archive.';
+    }
+
+    emptyState.style.display = 'none';
+    catalog.style.display = '';
+    catalog.innerHTML = '';
+
+    filtered.forEach((b, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = (i * 0.02) + 's';
+
+      card.innerHTML = `
+        <div class="card-stampnum">${stampNum(i)}</div>
+        <div class="card-main">
+          <p class="card-title">${escapeHtml(b.name)}<span class="card-ext">${extOf(b.name)}</span></p>
+        </div>
+        <div class="card-meta-col">
+          <span class="mono">${fmtSize(b.size)}</span><br/>
+          <span class="meta-date">shelved ${fmtDate(b.uploaded)}</span>
+        </div>
+        <div class="card-actions">
+          <button class="card-action primary" data-action="download" data-id="${b.id}">Download</button>
+          <button class="card-action danger" data-action="remove" data-id="${b.id}">Remove</button>
+        </div>
+      `;
+      catalog.appendChild(card);
+    });
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  catalog.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.card-action');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const book = books.find(b => b.id === id);
+    if (!book) return;
+
+    if (btn.dataset.action === 'download') {
+      const a = document.createElement('a');
+      a.href = book.dataUrl;
+      a.download = book.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast(`Downloading "${book.name}"`);
+    }
+
+    if (btn.dataset.action === 'remove') {
+      try {
+        await window.storage.delete(STORAGE_PREFIX + id, false);
+        books = books.filter(b => b.id !== id);
+        render();
+        showToast(`Removed "${book.name}" from the shelf`);
+      } catch (err) {
+        showToast('Could not remove that file.', true);
+      }
+    }
+  });
+
+  function addUploadRow(name){
+    const row = document.createElement('div');
+    row.className = 'upload-progress-item';
+    row.innerHTML = `
+      <span class="fname">${escapeHtml(name)}</span>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+    `;
+    uploadList.appendChild(row);
+    return row;
+  }
+
+  // Stored as base64 inside a JSON blob, so the effective ceiling is lower
+  // than the raw 5MB storage limit — base64 inflates size by ~33%, plus
+  // JSON wrapper overhead. Stay safely under that.
+  const MAX_FILE_BYTES = 3.4 * 1024 * 1024;
+
+  function handleFiles(fileList){
+    const files = Array.from(fileList);
+    files.forEach(file => {
+      if (file.size > MAX_FILE_BYTES) {
+        showToast(`"${file.name}" is too large for this shelf (max ${fmtSize(MAX_FILE_BYTES)}).`, true);
+        return;
+      }
+
+      const row = addUploadRow(file.name);
+      const fill = row.querySelector('.bar-fill');
+      fill.style.width = '15%';
+
+      const reader = new FileReader();
+      reader.onprogress = (evt) => {
+        if (evt.lengthComputable) {
+          const pct = Math.max(15, Math.round((evt.loaded / evt.total) * 90));
+          fill.style.width = pct + '%';
+        }
+      };
+      reader.onload = async () => {
+        fill.style.width = '95%';
+        const id = 'b' + Date.now() + Math.random().toString(36).slice(2,8);
+        const record = {
+          id,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          uploaded: Date.now(),
+          dataUrl: reader.result
+        };
+        try {
+          await window.storage.set(STORAGE_PREFIX + id, JSON.stringify(record), false);
+          fill.style.width = '100%';
+          row.classList.add('done');
+          books.unshift(record);
+          render();
+          showToast(`"${file.name}" added to the shelf`);
+          setTimeout(()=> row.remove(), 1400);
+        } catch (err) {
+          row.classList.add('error');
+          showToast(`Could not store "${file.name}" — it may be too large.`, true);
+        }
+      };
+      reader.onerror = () => {
+        row.classList.add('error');
+        showToast(`Could not read "${file.name}".`, true);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) handleFiles(e.target.files);
+    fileInput.value = '';
+  });
+
+  // Note: dropzone is a <label> wrapping the hidden <input type=file>,
+  // so native click/Enter/Space activation already opens the file picker.
+  // No extra keydown handler needed here (one previously caused a double-open).
+
+  ['dragenter','dragover'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag');
+    });
+  });
+  ['dragleave','drop'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag');
+    });
+  });
+  dropzone.addEventListener('drop', (e) => {
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+  });
+
+  refreshBtn.addEventListener('click', loadBooks);
+
+  searchInput.addEventListener('input', (e) => {
+    filterText = e.target.value;
+    render();
+  });
+
+  loadBooks();
+})();
+</script>
+
+</body>
+</html>
