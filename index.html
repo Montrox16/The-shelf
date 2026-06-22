@@ -21,54 +21,35 @@
     --stamp:#A6453A;
     --library-green:#3D5A4C;
     --rule: rgba(28,27,25,0.14);
-    --shadow: 0 1px 0 rgba(28,27,25,0.06);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
-
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   html, body {
-    margin:0;
-    padding:0;
+    margin:0; padding:0;
     background: var(--paper);
     color: var(--ink);
     font-family: 'Source Serif 4', Georgia, serif;
     overflow-x: hidden;
     max-width: 100vw;
   }
-
-  body{
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(28,27,25,0.035) 1px, transparent 0);
+  body {
+    background-image: radial-gradient(circle at 1px 1px, rgba(28,27,25,0.035) 1px, transparent 0);
     background-size: 22px 22px;
   }
-
   .mono { font-family: 'JetBrains Mono', monospace; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
-  /* reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-  }
-
-  a { color: inherit; }
-
-  /* ============ LAYOUT SHELL ============ */
+  /* ── LAYOUT ── */
   .frame {
     display: grid;
     grid-template-columns: 280px 1fr;
     min-height: 100vh;
     min-height: 100dvh;
   }
+  @media (max-width: 860px) { .frame { grid-template-columns: 1fr; } }
 
-  @media (max-width: 860px) {
-    .frame { grid-template-columns: 1fr; }
-  }
-
-  /* ============ SPINE (left rail) ============ */
+  /* ── SPINE ── */
   .spine {
     background: var(--binding);
     background-image: linear-gradient(180deg, var(--binding) 0%, var(--binding-dark) 100%);
@@ -77,379 +58,191 @@
     position: relative;
     border-right: 1px solid rgba(0,0,0,0.18);
   }
-  .spine::after{
+  .spine::after {
     content:"";
-    position:absolute;
-    top:0; right:-6px; bottom:0;
-    width:6px;
-    background: repeating-linear-gradient(
-      180deg,
-      rgba(0,0,0,0.18) 0px,
-      rgba(0,0,0,0.18) 3px,
-      transparent 3px,
-      transparent 9px
-    );
+    position:absolute; top:0; right:-6px; bottom:0; width:6px;
+    background: repeating-linear-gradient(180deg,rgba(0,0,0,0.18) 0px,rgba(0,0,0,0.18) 3px,transparent 3px,transparent 9px);
   }
-
-  .spine-title {
-    font-size: 13px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    opacity: 0.78;
-    margin: 0 0 6px;
-  }
-  .spine-name {
-    font-size: 30px;
-    line-height: 1.15;
-    margin: 0 0 28px;
-    font-weight: 600;
-  }
-  .spine-name em { font-style: italic; font-weight: 400; opacity: 0.92; }
-
-  .spine-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 32px;
-    padding-bottom: 28px;
-    border-bottom: 1px solid rgba(244,233,216,0.22);
-  }
-  .stat-row {
-    display:flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 13px;
-  }
-  .stat-label { opacity: 0.72; letter-spacing: 0.03em;}
-  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+  .spine-title { font-size:13px; letter-spacing:0.16em; text-transform:uppercase; opacity:0.78; margin:0 0 6px; }
+  .spine-name { font-size:30px; line-height:1.15; margin:0 0 28px; font-weight:600; }
+  .spine-name em { font-style:italic; font-weight:400; opacity:0.92; }
+  .spine-stats { display:flex; flex-direction:column; gap:14px; margin-bottom:32px; padding-bottom:28px; border-bottom:1px solid rgba(244,233,216,0.22); }
+  .stat-row { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; }
+  .stat-label { opacity:0.72; letter-spacing:0.03em; }
+  .stat-value { font-family:'JetBrains Mono',monospace; font-size:15px; }
 
   .dropzone {
-    border: 1.5px dashed rgba(244,233,216,0.45);
-    border-radius: 2px;
-    padding: 22px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
-    margin-bottom: 14px;
+    border:1.5px dashed rgba(244,233,216,0.45);
+    border-radius:2px; padding:22px 16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; cursor:pointer;
+    transition:background 0.15s ease, border-color 0.15s ease;
+    margin-bottom:14px;
   }
-  .dropzone:hover, .dropzone.drag {
-    background: rgba(244,233,216,0.08);
-    border-color: rgba(244,233,216,0.8);
-  }
-  .dropzone svg {
-    display: block;
-    width: 22px;
-    height: 22px;
-    margin: 0 auto 10px;
-    opacity: 0.85;
-    flex-shrink: 0;
-  }
-  .dropzone-title { font-size: 14px; margin: 0 0 4px; }
-  .dropzone-sub { font-size: 11.5px; opacity: 0.65; margin: 0; font-family: 'JetBrains Mono', monospace;}
+  .dropzone:hover, .dropzone.drag { background:rgba(244,233,216,0.08); border-color:rgba(244,233,216,0.8); }
+  .dropzone svg { display:block; width:22px; height:22px; margin:0 auto 10px; opacity:0.85; flex-shrink:0; }
+  .dropzone-title { font-size:14px; margin:0 0 4px; }
+  .dropzone-sub { font-size:11.5px; opacity:0.65; margin:0; font-family:'JetBrains Mono',monospace; }
   input[type=file] { display:none; }
 
-  .upload-list {
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-bottom: 18px;
+  .upload-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+  .upload-progress-item {
+    font-size:12px; font-family:'JetBrains Mono',monospace;
+    background:rgba(244,233,216,0.08); border:1px solid rgba(244,233,216,0.2);
+    padding:8px 10px; border-radius:2px;
   }
-  .upload-progress-item{
-    font-size: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    background: rgba(244,233,216,0.08);
-    border: 1px solid rgba(244,233,216,0.2);
-    padding: 8px 10px;
-    border-radius: 2px;
-  }
-  .upload-progress-item .fname { display:block; margin-bottom: 6px; opacity: 0.9; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;}
-  .bar-track { height: 3px; background: rgba(244,233,216,0.18); border-radius: 2px; overflow:hidden;}
-  .bar-fill { height: 100%; background: #F4E9D8; width:0%; transition: width 0.2s ease;}
-  .upload-progress-item.done .bar-fill { background: #9FCBB4; }
-  .upload-progress-item.error .bar-fill { background: var(--stamp); }
+  .upload-progress-item .fname { display:block; margin-bottom:6px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bar-track { height:3px; background:rgba(244,233,216,0.18); border-radius:2px; overflow:hidden; }
+  .bar-fill { height:100%; background:#F4E9D8; width:0%; transition:width 0.2s ease; }
+  .upload-progress-item.done .bar-fill { background:#9FCBB4; }
+  .upload-progress-item.error .bar-fill { background:var(--stamp); }
 
-  .spine-footnote {
-    font-size: 11px;
-    line-height: 1.6;
-    opacity: 0.55;
-    font-family: 'JetBrains Mono', monospace;
-  }
+  .spine-footnote { font-size:11px; line-height:1.6; opacity:0.55; font-family:'JetBrains Mono',monospace; }
 
-  /* ============ MAIN READING ROOM ============ */
-  .room {
-    padding: 48px 56px 80px;
-  }
-  @media (max-width: 860px){
-    .room { padding: 32px 20px 60px; }
-  }
-  @media (max-width: 860px){
-    .spine { padding: 24px 20px; }
-  }
-
-  @media (max-width: 420px){
-    .room { padding: 24px 14px 48px; }
-    .spine { padding: 20px 16px; }
-    .spine-name { font-size: 26px; }
-    .room-header { gap: 10px; }
-    .room-tools { gap: 10px; }
-    .refresh-btn .btn-label { display: none; }
-    .refresh-btn { padding: 9px 10px; }
-    .card-title { font-size: 15.5px; }
-    .card-ext { display: block; width: fit-content; margin: 4px 0 0; }
-  }
-
-  .room-header {
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 30px;
-    padding-bottom: 22px;
-    border-bottom: 2px solid var(--ink);
-  }
-  .room-header h1 {
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin: 0;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .room-tools {
-    display:flex;
-    align-items:center;
-    gap: 14px;
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: flex-end;
-  }
-  .search-wrap {
-    position: relative;
-    flex: 1 1 140px;
-    min-width: 0;
-  }
-  .search-wrap input {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-size: 16px;
-    border: none;
-    border-bottom: 1px solid var(--rule);
-    background: transparent;
-    padding: 4px 4px 6px 0;
-    width: 100%;
-    min-width: 0;
-    max-width: 220px;
-    color: var(--ink);
-    outline: none;
-  }
-  .search-wrap input::placeholder { color: var(--ink-soft); opacity: 0.6; }
-  .search-wrap input:focus { border-bottom-color: var(--ink); }
-
-  .refresh-btn {
+  /* ── SHOW-HIDDEN TOGGLE ── */
+  .show-hidden-wrap { margin-top: 18px; }
+  .show-hidden-btn {
     background: none;
-    border: 1px solid var(--ink);
-    color: var(--ink);
+    border: 1px solid rgba(244,233,216,0.3);
+    color: #F4E9D8;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 9px 14px;
-    min-height: 40px;
-    cursor: pointer;
+    padding: 7px 12px;
     border-radius: 2px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    transition: background 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+    opacity: 0.7;
+    width: 100%;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
   }
-  .refresh-btn:hover { background: var(--ink); color: var(--paper); }
-  .refresh-btn:focus-visible, .dropzone:focus-visible, .search-wrap input:focus-visible, .card-action:focus-visible {
-    outline: 2px solid var(--stamp);
-    outline-offset: 2px;
-  }
-  .refresh-btn svg { width: 13px; height: 13px; }
-  .refresh-btn.spin svg { animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .show-hidden-btn:hover { opacity: 1; border-color: rgba(244,233,216,0.7); }
 
-  /* empty state */
-  .empty-state {
-    text-align: center;
-    padding: 90px 20px;
-    color: var(--ink-soft);
-  }
-  .empty-state .glyph { font-size: 30px; margin-bottom: 14px; opacity: 0.5; }
-  .empty-state h2 {
-    font-family: 'Source Serif 4', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 22px;
-    margin: 0 0 8px;
-    color: var(--ink);
-  }
-  .empty-state p {
-    font-size: 13.5px;
-    max-width: 360px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
+  /* ── ROOM ── */
+  .room { padding:48px 56px 80px; }
+  @media (max-width:860px){ .room { padding:32px 20px 60px; } .spine { padding:24px 20px; } }
+  @media (max-width:420px){ .room { padding:24px 14px 48px; } .spine { padding:20px 16px; } .spine-name { font-size:26px; } }
 
-  /* ============ CATALOG CARDS (signature element) ============ */
-  .catalog {
-    display: flex;
-    flex-direction: column;
+  .room-header {
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center;
+    gap:16px; margin-bottom:30px; padding-bottom:22px; border-bottom:2px solid var(--ink);
   }
+  .room-header h1 { font-size:15px; text-transform:uppercase; letter-spacing:0.18em; margin:0; font-weight:600; white-space:nowrap; }
+  .room-tools { display:flex; align-items:center; gap:14px; flex:1 1 auto; min-width:0; justify-content:flex-end; }
+  .search-wrap { position:relative; flex:1 1 140px; min-width:0; }
+  .search-wrap input {
+    font-family:'Source Serif 4',serif; font-style:italic; font-size:16px;
+    border:none; border-bottom:1px solid var(--rule); background:transparent;
+    padding:4px 4px 6px 0; width:100%; min-width:0; max-width:220px;
+    color:var(--ink); outline:none;
+  }
+  .search-wrap input::placeholder { color:var(--ink-soft); opacity:0.6; }
+  .search-wrap input:focus { border-bottom-color:var(--ink); }
 
+  .refresh-btn {
+    background:none; border:1px solid var(--ink); color:var(--ink);
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.06em;
+    text-transform:uppercase; padding:9px 14px; min-height:40px;
+    cursor:pointer; border-radius:2px; display:flex; align-items:center; gap:6px;
+    flex-shrink:0; transition:background 0.15s ease, color 0.15s ease;
+  }
+  .refresh-btn:hover { background:var(--ink); color:var(--paper); }
+  .refresh-btn.spin svg { animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .refresh-btn svg { width:13px; height:13px; }
+  @media (max-width:420px){ .refresh-btn .btn-label { display:none; } .refresh-btn { padding:9px 10px; } }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align:center; padding:90px 20px; color:var(--ink-soft); }
+  .empty-state .glyph { font-size:30px; margin-bottom:14px; opacity:0.5; }
+  .empty-state h2 { font-style:italic; font-weight:400; font-size:22px; margin:0 0 8px; color:var(--ink); }
+  .empty-state p { font-size:13.5px; max-width:360px; margin:0 auto; line-height:1.6; }
+
+  /* ── CATALOG CARDS ── */
+  .catalog { display:flex; flex-direction:column; }
   .card {
-    display: grid;
-    grid-template-columns: 64px 1fr auto auto;
-    align-items: center;
-    gap: 22px;
-    padding: 18px 4px;
-    border-bottom: 1px solid var(--rule);
-    position: relative;
-    animation: rise 0.35s ease both;
+    display:grid; grid-template-columns:64px 1fr auto auto;
+    align-items:center; gap:22px; padding:18px 4px;
+    border-bottom:1px solid var(--rule); position:relative;
+    animation:rise 0.35s ease both;
   }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .card:first-child { border-top: 1px solid var(--rule); }
+  @keyframes rise { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .card:first-child { border-top:1px solid var(--rule); }
 
-  @media (max-width: 700px) {
-    .card {
-      grid-template-columns: 48px 1fr;
-      grid-template-areas:
-        "stamp title"
-        "stamp meta"
-        "stamp actions";
-      row-gap: 10px;
-      padding: 16px 0;
-    }
-    .card-stampnum { grid-area: stamp; }
-    .card-main { grid-area: title; }
-    .card-meta-col {
-      grid-area: meta;
-      text-align: left;
-    }
-    .card-actions { grid-area: actions; justify-self: start; flex-wrap: wrap; }
+  /* Preloaded badge */
+  .card.preloaded .card-stampnum {
+    border-color: var(--library-green);
+    color: var(--library-green);
   }
-
-  .card-stampnum {
+  .preloaded-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--binding);
-    border: 1px solid var(--binding);
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--paper-dim);
-    flex-shrink: 0;
-  }
-
-  .card-main { min-width: 0; }
-  .card-title {
-    font-size: 17px;
-    font-weight: 600;
-    margin: 0 0 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .card-ext {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: var(--stamp);
-    border: 1px solid var(--stamp);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--library-green);
+    border: 1px solid var(--library-green);
     border-radius: 2px;
     padding: 1px 5px;
     margin-left: 8px;
     vertical-align: middle;
+    opacity: 0.8;
   }
 
-  .card-meta-col {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    text-align: right;
-    line-height: 1.7;
-    white-space: nowrap;
+  @media (max-width:700px){
+    .card { grid-template-columns:48px 1fr; grid-template-areas:"stamp title""stamp meta""stamp actions"; row-gap:10px; padding:16px 0; }
+    .card-stampnum { grid-area:stamp; }
+    .card-main { grid-area:title; }
+    .card-meta-col { grid-area:meta; text-align:left; }
+    .card-actions { grid-area:actions; justify-self:start; flex-wrap:wrap; }
   }
-  .card-meta-col .meta-date { color: var(--library-green); }
 
-  .card-actions {
-    display: flex;
-    gap: 8px;
+  .card-stampnum {
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--binding); border:1px solid var(--binding); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--paper-dim); flex-shrink:0;
   }
+  .card-main { min-width:0; }
+  .card-title { font-size:17px; font-weight:600; margin:0 0 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .card-ext {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.04em;
+    color:var(--stamp); border:1px solid var(--stamp); border-radius:2px;
+    padding:1px 5px; margin-left:8px; vertical-align:middle;
+  }
+  .card-meta-col { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft); text-align:right; line-height:1.7; white-space:nowrap; }
+  .card-meta-col .meta-date { color:var(--library-green); }
+  .card-actions { display:flex; gap:8px; }
   .card-action {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    padding: 10px 14px;
-    min-height: 40px;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.04em;
+    text-transform:uppercase; background:none; border:1px solid var(--ink); color:var(--ink);
+    padding:10px 14px; min-height:40px; border-radius:2px; cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+    text-decoration:none; display:inline-flex; align-items:center;
   }
-  .card-action.primary {
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .card-action.primary:hover { background: var(--stamp); border-color: var(--stamp); }
-  .card-action.ghost:hover { background: var(--ink); color: var(--paper); }
-  .card-action.danger { border-color: var(--stamp); color: var(--stamp); }
-  .card-action.danger:hover { background: var(--stamp); color: var(--paper); }
+  .card-action.primary { background:var(--ink); color:var(--paper); }
+  .card-action.primary:hover { background:var(--stamp); border-color:var(--stamp); }
+  .card-action.ghost:hover { background:var(--ink); color:var(--paper); }
+  .card-action.danger { border-color:var(--stamp); color:var(--stamp); }
+  .card-action.danger:hover { background:var(--stamp); color:var(--paper); }
+  @media (max-width:420px){ .card-title { font-size:15.5px; } .card-ext { display:block; width:fit-content; margin:4px 0 0; } }
 
+  /* ── TOAST ── */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
-    left: 50%;
-    transform: translateX(-50%) translateY(12px);
-    background: var(--ink);
-    color: var(--paper);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    padding: 10px 18px;
-    border-radius: 2px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 50;
-    max-width: 90vw;
-    text-align: center;
+    position:fixed;
+    bottom:24px;
+    bottom:max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+    left:50%; transform:translateX(-50%) translateY(12px);
+    background:var(--ink); color:var(--paper);
+    font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    padding:10px 18px; border-radius:2px;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    z-index:50; max-width:90vw; text-align:center;
   }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  .toast.error { background: var(--stamp); }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.error { background:var(--stamp); }
 
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    white-space: nowrap;
-    border: 0;
-  }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 </style>
 </head>
 <body>
@@ -471,16 +264,20 @@
       </div>
     </div>
 
-    <label class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Add a book to the shelf">
+    <label class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Add a file to the shelf">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
       <p class="dropzone-title">Add to the shelf</p>
       <p class="dropzone-sub">drop a file, or click to browse</p>
-      <input type="file" id="fileInput" multiple />
+      <input type="file" id="fileInput" multiple accept=".pdf,.epub,.mobi,.azw,.azw3,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.csv,.odt,.ods,.odp,.cbz,.cbr,application/pdf,application/epub+zip,.fb2" />
     </label>
 
     <div class="upload-list" id="uploadList"></div>
 
-    <p class="spine-footnote">Stored in this browser's archive. Files stay here until you remove them.</p>
+    <p class="spine-footnote">Preloaded files are shared with everyone. Your own uploads are stored locally in this browser (up to 80MB per file).</p>
+
+    <div class="show-hidden-wrap">
+      <button class="show-hidden-btn" id="showHiddenBtn">Show hidden files</button>
+    </div>
   </aside>
 
   <!-- READING ROOM -->
@@ -513,229 +310,391 @@
 
 <script>
 (function(){
-  const STORAGE_PREFIX = 'book:';
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('fileInput');
-  const uploadList = document.getElementById('uploadList');
-  const catalog = document.getElementById('catalog');
-  const emptyState = document.getElementById('emptyState');
-  const statCount = document.getElementById('statCount');
-  const statSize = document.getElementById('statSize');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const searchInput = document.getElementById('searchInput');
-  const toastEl = document.getElementById('toast');
 
-  let books = []; // {id, name, size, type, uploaded(ts), dataUrl}
-  let filterText = '';
+  // =====================================================================
+  // ✏️  PRELOADED BOOKS — ADD YOUR FILES HERE
+  //
+  // 1. Drop your files into the  books/  folder next to index.html
+  // 2. Add an entry below for each file, following the same format:
+  //
+  //    { name: 'Display Title', file: 'books/your-filename.pdf' }
+  //
+  //    - "name"  is what shows in the catalog (can be anything you like)
+  //    - "file"  is the path relative to index.html
+  //
+  // Example entries are included below — replace them with your own.
+  // =====================================================================
+
+  const PRELOADED_BOOKS = [
+    { name: 'Introduction to jQuery',        file: 'books/1.06-jQuery-Intro.pdf'          },
+    { name: 'Introduction to MySQL',         file: 'books/Introduction to MySQL.pdf'       },
+    { name: 'Introduction to JavaScript',    file: 'books/javascript1.pdf'                 },
+    { name: 'Overview of WAP',               file: 'books/Lecture 1-Overview of WAP.pdf'   },
+    { name: 'IFT 302 Notes',                 file: 'books/REAL IFT 302 Notes.pdf'          },
+    { name: 'XML Basics',                    file: 'books/XML Basics.pdf'                  },
+  ];
+
+  // =====================================================================
+  // Everything below this line runs the app — no need to edit it.
+  // =====================================================================
+
+  const DB_NAME    = 'theShelfDB';
+  const DB_VERSION = 1;
+  const STORE_NAME = 'books';
+  const HIDDEN_KEY = 'theShelf_hidden'; // localStorage key for hidden preloaded IDs
+
+  const dropzone     = document.getElementById('dropzone');
+  const fileInput    = document.getElementById('fileInput');
+  const uploadList   = document.getElementById('uploadList');
+  const catalog      = document.getElementById('catalog');
+  const emptyState   = document.getElementById('emptyState');
+  const statCount    = document.getElementById('statCount');
+  const statSize     = document.getElementById('statSize');
+  const refreshBtn   = document.getElementById('refreshBtn');
+  const searchInput  = document.getElementById('searchInput');
+  const toastEl      = document.getElementById('toast');
+  const showHiddenBtn = document.getElementById('showHiddenBtn');
+
+  let uploadedBooks  = [];   // from IndexedDB
+  let preloadedBooks = [];   // from PRELOADED_BOOKS config (fetched)
+  let hiddenIds      = new Set(JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]'));
+  let filterText     = '';
+  let showingHidden  = false;
+  let dbPromise      = null;
+  const objectUrls   = new Map();
+
+  // ── IndexedDB ──────────────────────────────────────────────────────────
+
+  function openDB(){
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      if (!('indexedDB' in window)) { reject(new Error('IndexedDB not supported.')); return; }
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+            .createIndex('uploaded', 'uploaded', { unique: false });
+        }
+      };
+      req.onsuccess  = (e) => resolve(e.target.result);
+      req.onerror    = (e) => reject(e.target.error || new Error('Failed to open database.'));
+      req.onblocked  = ()  => reject(new Error('Database blocked — close other tabs of this page.'));
+    });
+    return dbPromise;
+  }
+
+  async function dbGetAll(){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror   = (e) => reject(e.target.error);
+    });
+  }
+
+  async function dbPut(record){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put(record);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = (e) => reject(e.target.error);
+      tx.onabort    = (e) => reject(e.target.error || new Error('Save aborted — device may be low on storage.'));
+    });
+  }
+
+  async function dbDelete(id){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror    = (e) => reject(e.target.error);
+    });
+  }
+
+  // ── Hidden IDs (localStorage) ──────────────────────────────────────────
+
+  function saveHidden(){
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify([...hiddenIds]));
+  }
+
+  function hidePreloaded(id){
+    hiddenIds.add(id);
+    saveHidden();
+  }
+
+  function restorePreloaded(id){
+    hiddenIds.delete(id);
+    saveHidden();
+  }
+
+  // ── UI helpers ─────────────────────────────────────────────────────────
 
   function showToast(msg, isError){
     toastEl.textContent = msg;
     toastEl.classList.toggle('error', !!isError);
     toastEl.classList.add('show');
     clearTimeout(showToast._t);
-    showToast._t = setTimeout(()=> toastEl.classList.remove('show'), 2600);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2600);
   }
 
   function fmtSize(bytes){
+    if (!bytes) return '—';
     if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+    if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/1048576).toFixed(1) + ' MB';
   }
 
   function fmtDate(ts){
     const d = new Date(ts);
-    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    return `${String(d.getDate()).padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    const m = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    return `${String(d.getDate()).padStart(2,'0')} ${m[d.getMonth()]} ${d.getFullYear()}`;
   }
 
   function extOf(name){
-    const parts = name.split('.');
-    return parts.length > 1 ? parts.pop().toUpperCase() : 'FILE';
+    const p = name.split('.');
+    return p.length > 1 ? p.pop().toUpperCase() : 'FILE';
   }
 
-  function stampNum(i){
-    return String(i+1).padStart(2,'0');
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
   }
+
+  // ── Fetch preloaded books ───────────────────────────────────────────────
+  // We do a HEAD request to confirm the file exists, then record its size.
+  // If a file 404s (you haven't added it yet), it's skipped gracefully.
+
+  async function loadPreloaded(){
+    const results = await Promise.allSettled(
+      PRELOADED_BOOKS.map(async (entry, i) => {
+        try {
+          const res = await fetch(entry.file, { method: 'HEAD' });
+          if (!res.ok) return null;
+          const size = parseInt(res.headers.get('content-length') || '0', 10);
+          return {
+            id:         'preloaded_' + i,
+            name:       entry.name,
+            file:       entry.file,
+            size,
+            uploaded:   0,
+            preloaded:  true,
+          };
+        } catch {
+          return null;
+        }
+      })
+    );
+    preloadedBooks = results
+      .filter(r => r.status === 'fulfilled' && r.value !== null)
+      .map(r => r.value);
+  }
+
+  // ── Load all books ──────────────────────────────────────────────────────
 
   async function loadBooks(){
     refreshBtn.classList.add('spin');
-    let keys = [];
     try {
-      const listResult = await window.storage.list(STORAGE_PREFIX, false);
-      keys = (listResult && listResult.keys) || [];
-    } catch (e) {
-      // An empty/missing key space throws rather than returning null —
-      // treat that as "nothing on the shelf yet", not a hard failure.
-      keys = [];
+      const [dbBooks] = await Promise.all([dbGetAll(), loadPreloaded()]);
+      dbBooks.sort((a,b) => b.uploaded - a.uploaded);
+      uploadedBooks = dbBooks;
+      render();
+    } catch(e) {
+      showToast(e.message || 'Could not load the archive.', true);
+    } finally {
+      setTimeout(() => refreshBtn.classList.remove('spin'), 400);
     }
-
-    const loaded = [];
-    for (const key of keys) {
-      try {
-        const res = await window.storage.get(key, false);
-        if (res && res.value) {
-          loaded.push(JSON.parse(res.value));
-        }
-      } catch (e) { /* skip unreadable entry */ }
-    }
-    loaded.sort((a,b)=> b.uploaded - a.uploaded);
-    books = loaded;
-    render();
-    setTimeout(()=> refreshBtn.classList.remove('spin'), 400);
   }
+
+  // ── Render ─────────────────────────────────────────────────────────────
 
   function render(){
     const q = filterText.trim().toLowerCase();
-    const filtered = q ? books.filter(b => b.name.toLowerCase().includes(q)) : books;
 
-    statCount.textContent = books.length;
-    const totalBytes = books.reduce((s,b)=> s + (b.size||0), 0);
-    statSize.textContent = fmtSize(totalBytes);
+    // Merge: preloaded (excluding hidden unless showingHidden) + uploaded
+    const visiblePreloaded = preloadedBooks.filter(b =>
+      showingHidden ? true : !hiddenIds.has(b.id)
+    );
+    const allBooks = [...visiblePreloaded, ...uploadedBooks];
 
-    if (books.length === 0) {
-      emptyState.style.display = '';
-      catalog.style.display = 'none';
-      return;
-    }
+    const filtered = q
+      ? allBooks.filter(b => b.name.toLowerCase().includes(q))
+      : allBooks;
+
+    // Stats count all books (including hidden preloaded + uploaded)
+    const totalCount = preloadedBooks.length + uploadedBooks.length;
+    const totalBytes = [...preloadedBooks, ...uploadedBooks].reduce((s,b) => s + (b.size||0), 0);
+    statCount.textContent = totalCount;
+    statSize.textContent  = fmtSize(totalBytes);
+
+    // Update show/hide button label
+    const hiddenCount = hiddenIds.size;
+    showHiddenBtn.textContent = showingHidden
+      ? 'Hide restored files'
+      : `Show hidden files${hiddenCount ? ' (' + hiddenCount + ')' : ''}`;
 
     if (filtered.length === 0) {
       emptyState.style.display = '';
-      catalog.style.display = 'none';
-      emptyState.querySelector('h2').textContent = 'No matches on the shelf';
-      emptyState.querySelector('p').textContent = `Nothing in the catalog matches "${filterText}".`;
+      catalog.style.display    = 'none';
+      if (allBooks.length === 0) {
+        emptyState.querySelector('h2').textContent = 'The shelf is empty';
+        emptyState.querySelector('p').textContent  = 'Nothing has been catalogued yet. Add a file from the left to begin your archive.';
+      } else if (q) {
+        emptyState.querySelector('h2').textContent = 'No matches on the shelf';
+        emptyState.querySelector('p').textContent  = `Nothing in the catalog matches "${filterText}".`;
+      } else {
+        emptyState.querySelector('h2').textContent = 'Nothing visible';
+        emptyState.querySelector('p').textContent  = 'All preloaded files are hidden. Click "Show hidden files" to restore them.';
+      }
       return;
-    } else {
-      emptyState.querySelector('h2').textContent = 'The shelf is empty';
-      emptyState.querySelector('p').textContent = 'Nothing has been catalogued yet. Add a file from the left to begin your archive.';
     }
 
     emptyState.style.display = 'none';
-    catalog.style.display = '';
-    catalog.innerHTML = '';
+    catalog.style.display    = '';
+    catalog.innerHTML        = '';
 
     filtered.forEach((b, i) => {
-      const card = document.createElement('div');
-      card.className = 'card';
+      const isHidden     = b.preloaded && hiddenIds.has(b.id);
+      const card         = document.createElement('div');
+      card.className     = 'card' + (b.preloaded ? ' preloaded' : '');
       card.style.animationDelay = (i * 0.02) + 's';
 
+      const metaLine = b.preloaded
+        ? `<span class="meta-date">preloaded</span>`
+        : `<span class="meta-date">shelved ${fmtDate(b.uploaded)}</span>`;
+
+      // Preloaded: Download links directly to the file; Remove = hide for me
+      // Uploaded:  Download via object URL; Remove = actually delete from IndexedDB
+      const downloadBtn = b.preloaded
+        ? `<a class="card-action primary" href="${escapeHtml(b.file)}" download="${escapeHtml(b.name)}">Download</a>`
+        : `<button class="card-action primary" data-action="download" data-id="${b.id}">Download</button>`;
+
+      const removeBtn = isHidden
+        ? `<button class="card-action ghost" data-action="restore" data-id="${b.id}">Restore</button>`
+        : `<button class="card-action danger" data-action="remove" data-id="${b.id}">Remove</button>`;
+
       card.innerHTML = `
-        <div class="card-stampnum">${stampNum(i)}</div>
+        <div class="card-stampnum">${String(i+1).padStart(2,'0')}</div>
         <div class="card-main">
-          <p class="card-title">${escapeHtml(b.name)}<span class="card-ext">${extOf(b.name)}</span></p>
+          <p class="card-title">
+            ${escapeHtml(b.name)}
+            <span class="card-ext">${extOf(b.name)}</span>
+            ${b.preloaded ? '<span class="preloaded-badge">Library</span>' : ''}
+          </p>
         </div>
         <div class="card-meta-col">
           <span class="mono">${fmtSize(b.size)}</span><br/>
-          <span class="meta-date">shelved ${fmtDate(b.uploaded)}</span>
+          ${metaLine}
         </div>
         <div class="card-actions">
-          <button class="card-action primary" data-action="download" data-id="${b.id}">Download</button>
-          <button class="card-action danger" data-action="remove" data-id="${b.id}">Remove</button>
+          ${downloadBtn}
+          ${removeBtn}
         </div>
       `;
       catalog.appendChild(card);
     });
   }
 
-  function escapeHtml(str){
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+  // ── Card actions ────────────────────────────────────────────────────────
 
   catalog.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.card-action');
+    const btn = e.target.closest('[data-action]');
     if (!btn) return;
-    const id = btn.dataset.id;
-    const book = books.find(b => b.id === id);
-    if (!book) return;
 
-    if (btn.dataset.action === 'download') {
-      const a = document.createElement('a');
-      a.href = book.dataUrl;
-      a.download = book.name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast(`Downloading "${book.name}"`);
+    const id     = btn.dataset.id;
+    const action = btn.dataset.action;
+
+    // ---- UPLOADED books ----
+    const uploaded = uploadedBooks.find(b => b.id === id);
+    if (uploaded) {
+      if (action === 'download') {
+        let url = objectUrls.get(id);
+        if (!url) { url = URL.createObjectURL(uploaded.blob); objectUrls.set(id, url); }
+        const a = document.createElement('a');
+        a.href = url; a.download = uploaded.name;
+        document.body.appendChild(a); a.click(); a.remove();
+        showToast(`Downloading "${uploaded.name}"`);
+      }
+      if (action === 'remove') {
+        try {
+          await dbDelete(id);
+          const url = objectUrls.get(id);
+          if (url) { URL.revokeObjectURL(url); objectUrls.delete(id); }
+          uploadedBooks = uploadedBooks.filter(b => b.id !== id);
+          render();
+          showToast(`Removed "${uploaded.name}" from the shelf`);
+        } catch { showToast('Could not remove that file.', true); }
+      }
+      return;
     }
 
-    if (btn.dataset.action === 'remove') {
-      try {
-        await window.storage.delete(STORAGE_PREFIX + id, false);
-        books = books.filter(b => b.id !== id);
+    // ---- PRELOADED books ----
+    const preloaded = preloadedBooks.find(b => b.id === id);
+    if (preloaded) {
+      if (action === 'remove') {
+        hidePreloaded(id);
         render();
-        showToast(`Removed "${book.name}" from the shelf`);
-      } catch (err) {
-        showToast('Could not remove that file.', true);
+        showToast(`Removed "${preloaded.name}" from your view`);
+      }
+      if (action === 'restore') {
+        restorePreloaded(id);
+        render();
+        showToast(`"${preloaded.name}" restored to the shelf`);
       }
     }
   });
 
+  // ── Upload ──────────────────────────────────────────────────────────────
+
+  const MAX_FILE_BYTES = 80 * 1024 * 1024;
+
+  function handleFiles(fileList){
+    Array.from(fileList).forEach(file => {
+      if (file.size > MAX_FILE_BYTES) {
+        showToast(`"${file.name}" is too large (max ${fmtSize(MAX_FILE_BYTES)}).`, true);
+        return;
+      }
+      if (file.size === 0) {
+        showToast(`"${file.name}" appears to be empty.`, true);
+        return;
+      }
+      const row  = addUploadRow(file.name);
+      const fill = row.querySelector('.bar-fill');
+      fill.style.width = '20%';
+      uploadFile(file, row, fill);
+    });
+  }
+
   function addUploadRow(name){
     const row = document.createElement('div');
     row.className = 'upload-progress-item';
-    row.innerHTML = `
-      <span class="fname">${escapeHtml(name)}</span>
-      <div class="bar-track"><div class="bar-fill"></div></div>
-    `;
+    row.innerHTML = `<span class="fname">${escapeHtml(name)}</span><div class="bar-track"><div class="bar-fill"></div></div>`;
     uploadList.appendChild(row);
     return row;
   }
 
-  // Stored as base64 inside a JSON blob, so the effective ceiling is lower
-  // than the raw 5MB storage limit — base64 inflates size by ~33%, plus
-  // JSON wrapper overhead. Stay safely under that.
-  const MAX_FILE_BYTES = 3.4 * 1024 * 1024;
-
-  function handleFiles(fileList){
-    const files = Array.from(fileList);
-    files.forEach(file => {
-      if (file.size > MAX_FILE_BYTES) {
-        showToast(`"${file.name}" is too large for this shelf (max ${fmtSize(MAX_FILE_BYTES)}).`, true);
-        return;
-      }
-
-      const row = addUploadRow(file.name);
-      const fill = row.querySelector('.bar-fill');
-      fill.style.width = '15%';
-
-      const reader = new FileReader();
-      reader.onprogress = (evt) => {
-        if (evt.lengthComputable) {
-          const pct = Math.max(15, Math.round((evt.loaded / evt.total) * 90));
-          fill.style.width = pct + '%';
-        }
-      };
-      reader.onload = async () => {
-        fill.style.width = '95%';
-        const id = 'b' + Date.now() + Math.random().toString(36).slice(2,8);
-        const record = {
-          id,
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          uploaded: Date.now(),
-          dataUrl: reader.result
-        };
-        try {
-          await window.storage.set(STORAGE_PREFIX + id, JSON.stringify(record), false);
-          fill.style.width = '100%';
-          row.classList.add('done');
-          books.unshift(record);
-          render();
-          showToast(`"${file.name}" added to the shelf`);
-          setTimeout(()=> row.remove(), 1400);
-        } catch (err) {
-          row.classList.add('error');
-          showToast(`Could not store "${file.name}" — it may be too large.`, true);
-        }
-      };
-      reader.onerror = () => {
-        row.classList.add('error');
-        showToast(`Could not read "${file.name}".`, true);
-      };
-      reader.readAsDataURL(file);
-    });
+  async function uploadFile(file, row, fill){
+    try {
+      fill.style.width = '55%';
+      const id = 'b' + Date.now() + Math.random().toString(36).slice(2,8);
+      const record = { id, name: file.name, size: file.size, type: file.type, uploaded: Date.now(), blob: file };
+      fill.style.width = '80%';
+      await dbPut(record);
+      fill.style.width = '100%';
+      row.classList.add('done');
+      uploadedBooks.unshift(record);
+      render();
+      showToast(`"${file.name}" added to the shelf`);
+      setTimeout(() => row.remove(), 1400);
+    } catch(err) {
+      row.classList.add('error');
+      showToast(err?.name === 'QuotaExceededError'
+        ? `Not enough storage space for "${file.name}".`
+        : `Could not store "${file.name}".`, true);
+    }
   }
 
   fileInput.addEventListener('change', (e) => {
@@ -743,31 +702,24 @@
     fileInput.value = '';
   });
 
-  // Note: dropzone is a <label> wrapping the hidden <input type=file>,
-  // so native click/Enter/Space activation already opens the file picker.
-  // No extra keydown handler needed here (one previously caused a double-open).
-
-  ['dragenter','dragover'].forEach(evt => {
-    dropzone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      dropzone.classList.add('drag');
-    });
-  });
-  ['dragleave','drop'].forEach(evt => {
-    dropzone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('drag');
-    });
-  });
+  ['dragenter','dragover'].forEach(evt =>
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('drag'); })
+  );
+  ['dragleave','drop'].forEach(evt =>
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('drag'); })
+  );
   dropzone.addEventListener('drop', (e) => {
     if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
   });
 
-  refreshBtn.addEventListener('click', loadBooks);
+  // ── Controls ────────────────────────────────────────────────────────────
 
-  searchInput.addEventListener('input', (e) => {
-    filterText = e.target.value;
-    render();
+  refreshBtn.addEventListener('click', loadBooks);
+  searchInput.addEventListener('input', (e) => { filterText = e.target.value; render(); });
+  showHiddenBtn.addEventListener('click', () => { showingHidden = !showingHidden; render(); });
+
+  window.addEventListener('beforeunload', () => {
+    objectUrls.forEach(url => URL.revokeObjectURL(url));
   });
 
   loadBooks();
